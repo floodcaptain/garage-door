@@ -90,7 +90,6 @@ void setup() {
   } 
 }
 void loop() {
-
   rst = digitalRead(rst_red);
   if (rst==LOW)
   {
@@ -110,7 +109,7 @@ void loop() {
 
   all_low();
 
-  delay(200);
+  delay(200); 
 } 
 
 void all_low()
@@ -150,11 +149,12 @@ int readfunction()
  }
   else 
   { pcserial.println("WRONG PASS!!");
+  	//add code for response to ble
     return 0;  
   }
 } 
 
-void bleupdate()
+void bleupdate() /////////////add code for response to ble
 { ledblink(2);
   strtok(bleresp,_parameter_key);         //seperates "previous password"
   strtok(NULL,_parameter_key);            //seperates "update"
@@ -182,7 +182,9 @@ void bleupdate()
   const char* temppass = password.c_str(); 
   writestringeeprom(temppass); 
   ledblink(2);
-  resetFunc();  
+  	////////////add code for response to ble
+  resetFunc();
+  bleserial.println("update success");  
 }
 
 void toggleupdown()
@@ -193,7 +195,8 @@ void toggleupdown()
       all_low();
       digitalWrite(up,HIGH);
       delay(_toggle_wait);
-      digitalWrite(up,LOW);}
+      digitalWrite(up,LOW);
+  	  bleserial.println("up success"); }
 
     if (strstr((char*)bleresp,down_config ))  
       { 
@@ -201,7 +204,8 @@ void toggleupdown()
         all_low();
         digitalWrite(down,HIGH);
         delay(_toggle_wait); 
-        digitalWrite(down,LOW);     
+        digitalWrite(down,LOW); 
+        bleserial.println("down success");     
       }
 
    if (strstr((char*)bleresp,extraterm_config ))  
@@ -210,14 +214,16 @@ void toggleupdown()
       all_low();
       digitalWrite(extra_term,HIGH);
       delay(_toggle_wait); 
-      digitalWrite(extra_term,LOW);     
+      digitalWrite(extra_term,LOW); 
+      bleserial.println("extra success");     
     }
 
    else  all_low();
 }
 
 void ble_rst()
-{    pcserial.println("ble reset");
+{   pcserial.println("ble reset");
+    bleserial.println("ble reset"); 
     memset(bleresp,0,_string_length);
     digitalWrite(ble,LOW); //power off BLE module
     delay(100);
@@ -269,24 +275,25 @@ void ledblink(int a)
       digitalWrite(led_green,LOW);
       delay(200);
   }
-}
+} 
 
 /* //TEST CODE
   digitalWrite(led_green,HIGH);
-  digitalWrite(led_red,HIGH);
+  digitalWrite(rst_red,HIGH);
   digitalWrite(up,HIGH);
   digitalWrite(down,HIGH);
-  digitalWrite(extra_button,HIGH);
+  digitalWrite(extra_term,HIGH);
 
   delay(600);
   
   digitalWrite(led_green,LOW);
-  digitalWrite(led_red,LOW);
+  digitalWrite(rst_red,LOW);
   digitalWrite(up,LOW);
   digitalWrite(down,LOW);
-  digitalWrite(extra_button,LOW);
+  digitalWrite(extra_term,LOW);
 
-  delay(600); */
+  delay(600); 
+  } */
 
 /********************code snippet of my custom string extractor****************/
    /*  char *p;
